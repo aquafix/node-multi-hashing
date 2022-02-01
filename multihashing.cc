@@ -648,6 +648,30 @@ DECLARE_FUNC(yespower_sugar) {
     SET_BUFFER_RETURN(output, 32);
 }
 
+DECLARE_FUNC(yespower_URX) {
+    DECLARE_SCOPE;
+
+    if (args.Length() < 1)
+        RETURN_EXCEPT("You must provide one argument.");
+
+#if NODE_MAJOR_VERSION >= 12
+    Local<Object> target = args[0]->ToObject(isolate);
+#else
+    Local<Object> target = args[0]->ToObject();
+#endif
+
+    if (!Buffer::HasInstance(target))
+        RETURN_EXCEPT("Argument should be a buffer object.");
+
+
+    char* input = Buffer::Data(target);
+    char output[32];
+
+    yespower_URX_hash(input, output);
+
+    SET_BUFFER_RETURN(output, 32);
+}
+
 DECLARE_INIT(init) {
     NODE_SET_METHOD(exports, "allium", allium);
     NODE_SET_METHOD(exports, "bcrypt", bcrypt);
